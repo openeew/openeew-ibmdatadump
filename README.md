@@ -2,5 +2,4 @@
 
 ## Introduction
 
-The algorithm subscribes to MQTT traces and saves them to AWS S3 storage.
-There are currently 2 formats: JSONL and MSEED.
+The algorithm subscribes to MQTT detections and events and saves them to IBM Cloudant storage.
