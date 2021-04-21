@@ -33,9 +33,7 @@ class ReceiveTopic:
         parser = ArgumentParser()
         parser.add_argument("--username", help="MQTT username")
         parser.add_argument("--password", help="MQTT password")
-        parser.add_argument(
-            "--clientid", help="MQTT clientID", default="receive_topic"
-        )
+        parser.add_argument("--clientid", help="MQTT clientID", default="receive_topic")
         parser.add_argument(
             "--host",
             help="MQTT host",
@@ -92,7 +90,7 @@ class ReceiveTopic:
             cloud_t = utc_time.timestamp()
 
             self.topic_list.data.append(data)
-            print('I am ' + self.topic)
+            print("I am " + self.topic)
 
         except BaseException as exception:
             print(exception)

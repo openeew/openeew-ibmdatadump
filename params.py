@@ -13,5 +13,5 @@ params = {
     "region": region,
     "event_table_name": event_table_name,
     "detection_table_name": detection_table_name,
-    "sleep_time_save": sleep_time_save
+    "sleep_time_save": sleep_time_save,
 }

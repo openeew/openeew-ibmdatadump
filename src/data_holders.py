@@ -15,6 +15,7 @@ class Detections:
     def __init__(self):
         self.data = []
 
+
 class Events:
     """This dataclass holds a reference to the Events DF in memory."""
 
