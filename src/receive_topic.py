@@ -23,7 +23,7 @@ class ReceiveTopic:
         self.topic_list = topic_list
 
     def run(self):
-        """Main method that parses command options and executes the rest of the script"""
+        """Main method that creates client and executes the rest of the script"""
 
         if self.params["MQTT"]=="IBM":
             # create a client

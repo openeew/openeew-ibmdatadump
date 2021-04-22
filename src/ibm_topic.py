@@ -9,13 +9,6 @@ import pandas as pd
 import json
 import os
 
-# Create a dictionary of aws credentials from enviroment variables
-ibm_cred = {
-    "SERVICE_PASSWORD": os.environ["SERVICE_PASSWORD"],
-    "SERVICE_URL": os.environ["SERVICE_URL"],
-    "SERVICE_USERNAME": os.environ["SERVICE_USERNAME"],
-}
-
 class Topic2IBM:
     """This class gets the devices from Cloudant"""
 
@@ -24,10 +17,12 @@ class Topic2IBM:
         super().__init__()
         self.params = params
         self.topic = topic
-        self.ibm_cred = ibm_cred
         self.topic_list = topic_list
 
-        client = Cloudant(self.ibm_cred["SERVICE_USERNAME"], self.ibm_cred["SERVICE_PASSWORD"], url=self.ibm_cred["SERVICE_URL"])
+        client = Cloudant(
+            os.environ["CLOUDANT_USERNAME"],
+            os.environ["CLOUDANT_PASSWORD"],
+            url=os.environ["CLOUDANT_URL"])
         client.connect()
 
         if self.topic == "event":

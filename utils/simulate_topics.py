@@ -9,39 +9,42 @@ import pandas as pd
 import time
 from datetime import datetime
 
+import os,sys,inspect
+current_dir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
+parent_dir = os.path.dirname(current_dir)
+sys.path.insert(0, parent_dir) 
+from params import params
 
 def run():
 
-    if self.params["MQTT"]=="IBM":
+    if params["MQTT"]=="IBM":
         # create a client
         client = create_client(
             host=os.environ["MQTT_HOST"],
             port=1883,
             username=os.environ["MQTT_USERNAME"],
             password=os.environ["MQTT_PASSWORD"],
-            clientid=os.environ["MQTT_CLIENTID"]+self.topic,
         )
 
-    elif self.params["MQTT"]=="local":
+    elif params["MQTT"]=="local":
         # create a client
         client = create_client(
             host="localhost",
             port=1883,
             username="NA",
-            password="NA",
-            clientid="NA:"+self.topic,
+            password="NA"
         )
  
     publish_json(
-        arguments.directory + "test_detections.json",
+        params["test_data_path"] + "test_detections.json",
         client,
-        "iot-2/type/OpenEEW/id/pr/evt/detection/fmt/json",
+        "iot-2/type/OpenEEW/id/" + params["region"] + "/evt/detection/fmt/json",
     )
 
     publish_json(
-        arguments.directory + "test_events.json",
+        params["test_data_path"] + "test_events.json",
         client,
-        "iot-2/type/OpenEEW/id/pr/evt/event/fmt/json",
+        "iot-2/type/OpenEEW/id/" + params["region"] + "/evt/event/fmt/json",
     )
 
 
@@ -68,7 +71,11 @@ def publish_json(data_path, client, topic):
             json_array = json.load(json_file)
 
             for message in json_array:
-                client.publish(topic, json.dumps(message))
+
+                message = json.dumps(message)
+                print(type(message))
+
+                client.publish(topic, message)
                 print("published " + topic)
 
 

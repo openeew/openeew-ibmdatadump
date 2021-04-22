@@ -10,14 +10,6 @@ import os
 from params import params
 from src import receive_topic, data_holders, ibm_topic
 
-__author__ = "Vaclav Kuna"
-__copyright__ = ""
-__license__ = ""
-__version__ = "1.0"
-__maintainer__ = "Vaclav Kuna"
-__email__ = "kuna.vaclav@gmail.com"
-__status__ = ""
-
 
 def main():
     """Does everything"""
