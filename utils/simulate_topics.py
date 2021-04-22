@@ -77,4 +77,5 @@ def publish_json(data_path, client, topic):
                 client.publish(topic, json.dumps(message))
                 print("published " + topic)
 
+
 run()

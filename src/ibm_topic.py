@@ -40,12 +40,11 @@ class Topic2IBM:
     def message2cloudant(self, topic_list):
 
         data = self.topic_list.data
-        
+
         for message in data:
             self.db.create_document(message)
-        
-        self.topic_list.data = []
 
+        self.topic_list.data = []
 
     def run(self):
         # run loop indefinitely
@@ -53,7 +52,7 @@ class Topic2IBM:
 
             # try to get devices from cloud
             self.message2cloudant(self.topic_list)
-            
+
             print("✅ Wrote topic to the cloudant database.")
 
             time.sleep(self.params["sleep_time_save"])

@@ -30,22 +30,30 @@ def main():
     events = data_holders.Events()
 
     # We create and start detection worker
-    detection_rec = receive_topic.ReceiveTopic(topic_list=detections, topic="detection", params=params, ibm_cred=ibm_cred)
+    detection_rec = receive_topic.ReceiveTopic(
+        topic_list=detections, topic="detection", params=params, ibm_cred=ibm_cred
+    )
     det_rec_process = Thread(target=detection_rec.run)
     det_rec_process.start()
 
     # We create and start detection worker
-    event_rec = receive_topic.ReceiveTopic(topic_list=events, topic="event", params=params, ibm_cred=ibm_cred)
+    event_rec = receive_topic.ReceiveTopic(
+        topic_list=events, topic="event", params=params, ibm_cred=ibm_cred
+    )
     ev_rec_process = Thread(target=event_rec.run)
     ev_rec_process.start()
 
     # We create and start detection worker
-    detection_send = ibm_topic.Topic2IBM(topic_list=detections, topic="detection", params=params, ibm_cred=ibm_cred)
+    detection_send = ibm_topic.Topic2IBM(
+        topic_list=detections, topic="detection", params=params, ibm_cred=ibm_cred
+    )
     det_send_process = Thread(target=detection_send.run)
     det_send_process.start()
 
     # We create and start detection worker
-    event_send = ibm_topic.Topic2IBM(topic_list=events, topic="event", params=params, ibm_cred=ibm_cred)
+    event_send = ibm_topic.Topic2IBM(
+        topic_list=events, topic="event", params=params, ibm_cred=ibm_cred
+    )
     ev_send_process = Thread(target=event_send.run)
     ev_send_process.start()
 
