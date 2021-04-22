@@ -11,33 +11,27 @@ from datetime import datetime
 
 
 def run():
-    """Main method that parses command options and executes the rest of the script"""
-    parser = ArgumentParser()
-    parser.add_argument(
-        "--host", help="An MQTT host", nargs="?", const="localhost", default="localhost"
-    )
-    parser.add_argument(
-        "--port", help="An MQTT port", nargs="?", type=int, const=1883, default=1883
-    )
-    parser.add_argument(
-        "--directory",
-        help="A directory containing *.JSONL files",
-        nargs="?",
-        default="../data/",
-    )
 
-    parser.add_argument("--clientid", help="MQTT clientID", default="simulator_topics")
+    if self.params["MQTT"]=="IBM":
+        # create a client
+        client = create_client(
+            host=os.environ["MQTT_HOST"],
+            port=1883,
+            username=os.environ["MQTT_USERNAME"],
+            password=os.environ["MQTT_PASSWORD"],
+            clientid=os.environ["MQTT_CLIENTID"]+self.topic,
+        )
 
-    # If MQTT has username and password authentication on
-    parser.add_argument("--username", help="A username for the MQTT Server")
-    parser.add_argument("--password", help="A password for the MQTT server")
-
-    arguments = parser.parse_args()
-
-    client = create_client(
-        arguments.host, arguments.port, arguments.username, arguments.password
-    )
-
+    elif self.params["MQTT"]=="local":
+        # create a client
+        client = create_client(
+            host="localhost",
+            port=1883,
+            username="NA",
+            password="NA",
+            clientid="NA:"+self.topic,
+        )
+ 
     publish_json(
         arguments.directory + "test_detections.json",
         client,

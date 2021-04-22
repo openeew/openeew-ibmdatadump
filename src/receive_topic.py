@@ -5,23 +5,17 @@ from paho.mqtt.client import Client as MqttClient
 import datetime
 import time
 import pandas as pd
-from dotenv import dotenv_values
 from cloudant.client import Cloudant
 from cloudant.error import CloudantException
 from cloudant.result import Result, ResultByKey
 from cloudant.database import CloudantDatabase
-
-ibm_cred = dotenv_values()
-
-SERVICE_USERNAME = ibm_cred["SERVICE_USERNAME"]
-SERVICE_PASSWORD = ibm_cred["SERVICE_PASSWORD"]
-SERVICE_URL = ibm_cred["SERVICE_URL"]
+import os
 
 
 class ReceiveTopic:
     """This class subscribes to the MQTT and receivces raw data"""
 
-    def __init__(self, topic_list, params, topic, ibm_cred) -> None:
+    def __init__(self, topic_list, topic, params) -> None:
         """Initializes the DataReceiver object"""
         super().__init__()
         self.params = params
@@ -30,29 +24,27 @@ class ReceiveTopic:
 
     def run(self):
         """Main method that parses command options and executes the rest of the script"""
-        parser = ArgumentParser()
-        parser.add_argument("--username", help="MQTT username")
-        parser.add_argument("--password", help="MQTT password")
-        parser.add_argument("--clientid", help="MQTT clientID", default="receive_topic")
-        parser.add_argument(
-            "--host",
-            help="MQTT host",
-            nargs="?",
-            const="localhost",
-            default="localhost",
-        )
-        parser.add_argument(
-            "--port", help="MQTT port", nargs="?", type=int, const=1883, default=1883
-        )
-        arguments = parser.parse_args()
 
-        client = self.create_client(
-            arguments.host,
-            arguments.port,
-            arguments.username,
-            arguments.password,
-            arguments.clientid,
-        )
+        if self.params["MQTT"]=="IBM":
+            # create a client
+            client = self.create_client(
+                host=os.environ["MQTT_HOST"],
+                port=1883,
+                username=os.environ["MQTT_USERNAME"],
+                password=os.environ["MQTT_PASSWORD"],
+                clientid=os.environ["MQTT_CLIENTID"]+self.topic,
+            )
+
+        elif self.params["MQTT"]=="local":
+            # create a client
+            client = self.create_client(
+                host="localhost",
+                port=1883,
+                username="NA",
+                password="NA",
+                clientid="NA:"+self.topic,
+            )
+
         client.loop_forever()
 
     def create_client(self, host, port, username, password, clientid):
@@ -69,12 +61,12 @@ class ReceiveTopic:
 
     def on_connect(self, client, userdata, flags, resultcode):
         """Upon connecting to an MQTT server, subscribe to the topic
-        The production topic is 'iot-2/type/OpenEEW/id/+/evt/status/fmt/json'"""
+        The production topic is 'iot-2/type/OpenEEW/id/+/evt/+/fmt/json'"""
 
         region = self.params["region"]
 
         topic = "iot-2/type/OpenEEW/id/" + region + "/evt/" + self.topic + "/fmt/json"
-        print(f"✅ Subscribed to sensor data with result code {resultcode}")
+        print(f"✅ Subscribed to detection topic with result code {resultcode}")
         client.subscribe(topic)
 
     def on_message(self, client, userdata, message):
@@ -84,13 +76,7 @@ class ReceiveTopic:
             decoded_message = str(message.payload.decode("utf-8", "ignore"))
             data = json.loads(decoded_message)
 
-            # get timestamp for the received trace
-            dt = datetime.datetime.now(datetime.timezone.utc)
-            utc_time = dt.replace(tzinfo=datetime.timezone.utc)
-            cloud_t = utc_time.timestamp()
-
             self.topic_list.data.append(data)
-            print("I am " + self.topic)
 
         except BaseException as exception:
             print(exception)

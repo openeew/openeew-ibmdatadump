@@ -5,7 +5,7 @@ This is the main file that runs the OpenEEW code package
 # import modules
 import time
 from threading import Thread
-from dotenv import dotenv_values
+import os
 
 from params import params
 from src import receive_topic, data_holders, ibm_topic
@@ -21,7 +21,6 @@ __status__ = ""
 
 def main():
     """Does everything"""
-    ibm_cred = dotenv_values()  # take AWS S3 credentials from .env
 
     # Create a Detections DataFrame.
     detections = data_holders.Detections()
@@ -29,30 +28,30 @@ def main():
     # Create a Events DataFrame.
     events = data_holders.Events()
 
-    # We create and start detection worker
+    # We create and start receive detection worker
     detection_rec = receive_topic.ReceiveTopic(
-        topic_list=detections, topic="detection", params=params, ibm_cred=ibm_cred
+        topic_list=detections, topic="detection", params=params
     )
     det_rec_process = Thread(target=detection_rec.run)
     det_rec_process.start()
 
-    # We create and start detection worker
+    # We create and start receive event worker
     event_rec = receive_topic.ReceiveTopic(
-        topic_list=events, topic="event", params=params, ibm_cred=ibm_cred
+        topic_list=events, topic="event", params=params
     )
     ev_rec_process = Thread(target=event_rec.run)
     ev_rec_process.start()
 
-    # We create and start detection worker
+    # We create and start publish detection worker
     detection_send = ibm_topic.Topic2IBM(
-        topic_list=detections, topic="detection", params=params, ibm_cred=ibm_cred
+        topic_list=detections, topic="detection", params=params
     )
     det_send_process = Thread(target=detection_send.run)
     det_send_process.start()
 
-    # We create and start detection worker
+    # We create and start publish event worker
     event_send = ibm_topic.Topic2IBM(
-        topic_list=events, topic="event", params=params, ibm_cred=ibm_cred
+        topic_list=events, topic="event", params=params
     )
     ev_send_process = Thread(target=event_send.run)
     ev_send_process.start()
