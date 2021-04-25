@@ -23,26 +23,30 @@ class ReceiveTopic:
         self.topic_list = topic_list
 
     def run(self):
-        """Main method that creates client and executes the rest of the script"""
+        """
+        Main method that creates client and executes the rest of the script
 
-        if self.params["MQTT"]=="IBM":
+        MQTT variable in params (params["MQTT"]) define whether local, or IBM MQTT is used
+        """
+
+        if self.params["MQTT"] == "IBM":
             # create a client
             client = self.create_client(
                 host=os.environ["MQTT_HOST"],
-                port=1883,
+                port=os.environ["MQTT_PORT"],
                 username=os.environ["MQTT_USERNAME"],
                 password=os.environ["MQTT_PASSWORD"],
-                clientid=os.environ["MQTT_CLIENTID"]+self.topic,
+                clientid=os.environ["MQTT_CLIENTID"] + self.topic,
             )
 
-        elif self.params["MQTT"]=="local":
+        elif self.params["MQTT"] == "local":
             # create a client
             client = self.create_client(
                 host="localhost",
                 port=1883,
                 username="NA",
                 password="NA",
-                clientid="NA:"+self.topic,
+                clientid="NA:" + self.topic,
             )
 
         client.loop_forever()

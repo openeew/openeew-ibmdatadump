@@ -9,15 +9,17 @@ import pandas as pd
 import time
 from datetime import datetime
 
-import os,sys,inspect
+import os, sys, inspect
+
 current_dir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
 parent_dir = os.path.dirname(current_dir)
-sys.path.insert(0, parent_dir) 
+sys.path.insert(0, parent_dir)
 from params import params
+
 
 def run():
 
-    if params["MQTT"]=="IBM":
+    if params["MQTT"] == "IBM":
         # create a client
         client = create_client(
             host=os.environ["MQTT_HOST"],
@@ -26,15 +28,12 @@ def run():
             password=os.environ["MQTT_PASSWORD"],
         )
 
-    elif params["MQTT"]=="local":
+    elif params["MQTT"] == "local":
         # create a client
         client = create_client(
-            host="localhost",
-            port=1883,
-            username="NA",
-            password="NA"
+            host="localhost", port=1883, username="NA", password="NA"
         )
- 
+
     publish_json(
         params["test_data_path"] + "test_detections.json",
         client,

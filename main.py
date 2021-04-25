@@ -42,9 +42,7 @@ def main():
     det_send_process.start()
 
     # We create and start publish event worker
-    event_send = ibm_topic.Topic2IBM(
-        topic_list=events, topic="event", params=params
-    )
+    event_send = ibm_topic.Topic2IBM(topic_list=events, topic="event", params=params)
     ev_send_process = Thread(target=event_send.run)
     ev_send_process.start()
 

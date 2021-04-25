@@ -9,6 +9,7 @@ import pandas as pd
 import json
 import os
 
+
 class Topic2IBM:
     """This class gets the devices from Cloudant"""
 
@@ -22,7 +23,8 @@ class Topic2IBM:
         client = Cloudant(
             os.environ["CLOUDANT_USERNAME"],
             os.environ["CLOUDANT_PASSWORD"],
-            url=os.environ["CLOUDANT_URL"])
+            url=os.environ["CLOUDANT_URL"],
+        )
         client.connect()
 
         if self.topic == "event":
