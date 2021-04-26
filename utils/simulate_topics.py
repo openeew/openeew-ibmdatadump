@@ -23,7 +23,7 @@ def run():
         # create a client
         client = create_client(
             host=os.environ["MQTT_HOST"],
-            port=1883,
+            port=int(os.environ["MQTT_PORT"]),
             username=os.environ["MQTT_USERNAME"],
             password=os.environ["MQTT_PASSWORD"],
         )

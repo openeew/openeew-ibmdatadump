@@ -3,10 +3,10 @@ This file sets parameters used in data dump OpenEEW algorithm
 """
 
 # MQTT
-MQTT = "IBM"  # local or IBM
+MQTT = "local"  # local or IBM
 
 # PARAMETERS
-region = "mx"
+region = "MX"
 event_table_name = "events-test"
 detection_table_name = "detections-test"
 sleep_time_save = 2

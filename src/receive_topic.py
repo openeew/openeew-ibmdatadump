@@ -33,7 +33,7 @@ class ReceiveTopic:
             # create a client
             client = self.create_client(
                 host=os.environ["MQTT_HOST"],
-                port=os.environ["MQTT_PORT"],
+                port=int(os.environ["MQTT_PORT"]),
                 username=os.environ["MQTT_USERNAME"],
                 password=os.environ["MQTT_PASSWORD"],
                 clientid=os.environ["MQTT_CLIENTID"] + self.topic,
@@ -71,6 +71,7 @@ class ReceiveTopic:
 
         topic = "iot-2/type/OpenEEW/id/" + region + "/evt/" + self.topic + "/fmt/json"
         print(f"✅ Subscribed to detection topic with result code {resultcode}")
+        print("  Topic {}".format(topic))
         client.subscribe(topic)
 
     def on_message(self, client, userdata, message):
