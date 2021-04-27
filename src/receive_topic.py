@@ -48,6 +48,16 @@ class ReceiveTopic:
                 password="NA",
                 clientid="NA:" + self.topic,
             )
+        
+        elif self.params["MQTT"] == "custom":
+            # create a client
+            client = self.create_client(
+                host=os.environ["CUS_MQTT_HOST"],
+                port=int(os.environ["CUS_MQTT_PORT"]),
+                username=os.environ["CUS_MQTT_USERNAME"],
+                password=os.environ["CUS_MQTT_PASSWORD"],
+                clientid=os.environ["CUS_MQTT_CLIENTID"] + self.topic
+            )
 
         client.loop_forever()
 

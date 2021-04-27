@@ -34,6 +34,15 @@ def run():
             host="localhost", port=1883, username="NA", password="NA"
         )
 
+    elif params["MQTT"] == "custom":
+        # create a client
+        client = create_client(
+            host=os.environ["CUS_MQTT_HOST"],
+            port=int(os.environ["CUS_MQTT_PORT"]),
+            username=os.environ["CUS_MQTT_USERNAME"],
+            password=os.environ["CUS_MQTT_PASSWORD"]
+        )
+
     publish_json(
         params["test_data_path"] + "test_detections.json",
         client,
