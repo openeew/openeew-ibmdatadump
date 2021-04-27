@@ -67,9 +67,7 @@ class ReceiveTopic:
         """Upon connecting to an MQTT server, subscribe to the topic
         The production topic is 'iot-2/type/OpenEEW/id/+/evt/+/fmt/json'"""
 
-        region = self.params["region"]
-
-        topic = "iot-2/type/OpenEEW/id/" + region + "/evt/" + self.topic + "/fmt/json"
+        topic = "iot-2/type/OpenEEW/id/+/evt/" + self.topic + "/fmt/json"
         print(f"✅ Subscribed to detection topic with result code {resultcode}")
         print("  Topic {}".format(topic))
         client.subscribe(topic)
