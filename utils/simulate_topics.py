@@ -40,7 +40,7 @@ def run():
             host=os.environ["CUS_MQTT_HOST"],
             port=int(os.environ["CUS_MQTT_PORT"]),
             username=os.environ["CUS_MQTT_USERNAME"],
-            password=os.environ["CUS_MQTT_PASSWORD"]
+            password=os.environ["CUS_MQTT_PASSWORD"],
         )
 
     publish_json(
