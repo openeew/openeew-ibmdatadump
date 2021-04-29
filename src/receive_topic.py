@@ -49,14 +49,28 @@ class ReceiveTopic:
                 clientid="NA:" + self.topic,
             )
 
+        elif self.params["MQTT"] == "custom":
+            # create a client
+            client = self.create_client(
+                host=os.environ["CUS_MQTT_HOST"],
+                port=int(os.environ["CUS_MQTT_PORT"]),
+                username=os.environ["CUS_MQTT_USERNAME"],
+                password=os.environ["CUS_MQTT_PASSWORD"],
+                clientid=os.environ["CUS_MQTT_CLIENTID"] + self.topic,
+                cafile=os.environ["CUS_MQTT_CERT"],
+            )
+
         client.loop_forever()
 
-    def create_client(self, host, port, username, password, clientid):
+    def create_client(self, host, port, username, password, clientid, cafile=None):
         """Creating an MQTT Client Object"""
         client = MqttClient(clientid)
 
         if username and password:
             client.username_pw_set(username=username, password=password)
+
+        if cafile:
+            client.tls_set(certfile=cafile)
 
         client.on_connect = self.on_connect
         client.on_message = self.on_message
@@ -67,9 +81,7 @@ class ReceiveTopic:
         """Upon connecting to an MQTT server, subscribe to the topic
         The production topic is 'iot-2/type/OpenEEW/id/+/evt/+/fmt/json'"""
 
-        region = self.params["region"]
-
-        topic = "iot-2/type/OpenEEW/id/" + region + "/evt/" + self.topic + "/fmt/json"
+        topic = "iot-2/type/OpenEEW/id/+/evt/" + self.topic + "/fmt/json"
         print(f"✅ Subscribed to detection topic with result code {resultcode}")
         print("  Topic {}".format(topic))
         client.subscribe(topic)
