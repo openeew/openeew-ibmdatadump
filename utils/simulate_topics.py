@@ -41,6 +41,7 @@ def run():
             port=int(os.environ["CUS_MQTT_PORT"]),
             username=os.environ["CUS_MQTT_USERNAME"],
             password=os.environ["CUS_MQTT_PASSWORD"],
+            cafile=os.environ["CUS_MQTT_CERT"]
         )
 
     publish_json(
@@ -56,12 +57,15 @@ def run():
     )
 
 
-def create_client(host, port, username, password):
+def create_client(host, port, username, password, cafile=None):
     """Creating an MQTT Client Object"""
     client = MqttClient()
 
     if username and password:
         client.username_pw_set(username=username, password=password)
+
+    if cafile:
+        client.tls_set(ca_certs=cafile)
 
     client.connect(host=host, port=port)
     return client
