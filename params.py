@@ -3,7 +3,7 @@ This file sets parameters used in data dump OpenEEW algorithm
 """
 
 # MQTT
-MQTT = "local"  # local or IBM
+MQTT = "local"  # local, custom, or IBM
 
 # PARAMETERS
 region = "MX"
