@@ -59,7 +59,7 @@ class ReceiveTopic:
                 clientid=os.environ["CUS_MQTT_CLIENTID"] + self.topic,
                 # cafile=os.environ["CUS_MQTT_CERT"]
             )
-            
+
         client.loop_forever()
 
     def create_client(self, host, port, username, password, clientid, cafile=None):
@@ -68,7 +68,7 @@ class ReceiveTopic:
 
         if username and password:
             client.username_pw_set(username=username, password=password)
-        
+
         if cafile:
             client.tls_set(ca_certs=cafile)
 

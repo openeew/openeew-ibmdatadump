@@ -57,10 +57,10 @@ class Topic2IBM:
             unique_events = list(set([n["event_id"] for n in data]))
 
             for event_id in unique_events:
-                event_entries = [n for n in data if n["event_id"]==event_id]
+                event_entries = [n for n in data if n["event_id"] == event_id]
                 max_time = max([n["cloud_t"] for n in event_entries])
 
-                if max_time+self.params["max_pause"]<cloud_t:
+                if max_time + self.params["max_pause"] < cloud_t:
 
                     out_dict = {"event_id": event_id}
                     id = 1
@@ -68,7 +68,7 @@ class Topic2IBM:
                     for message in event_entries:
                         out_dict[id] = message
                         id += 1
-            
+
                     self.db.create_document(out_dict)
 
                     print("✅ Wrote " + self.topic + " to the cloudant database.")

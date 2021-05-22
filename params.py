@@ -10,7 +10,7 @@ region = "OE"
 event_table_name = "openeew-events"
 detection_table_name = "openeew-detections"
 sleep_time_save = 10
-max_pause = 10 # save event if there are no entries for this time
+max_pause = 10  # save event if there are no entries for this time
 
 # TEST DATA PATH
 test_data_path = "../data/"
@@ -23,5 +23,5 @@ params = {
     "sleep_time_save": sleep_time_save,
     "MQTT": MQTT,
     "test_data_path": test_data_path,
-    "max_pause": max_pause
+    "max_pause": max_pause,
 }
