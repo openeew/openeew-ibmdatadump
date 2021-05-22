@@ -8,6 +8,7 @@ import time
 import pandas as pd
 import json
 import os
+import datetime
 
 
 class Topic2IBM:
@@ -38,11 +39,40 @@ class Topic2IBM:
 
         data = self.topic_list.data
 
-        for message in data:
-            self.db.create_document(message)
-            print("✅ Wrote " + self.topic + " to the cloudant database.")
+        if self.topic == "detection":
+            for message in data:
+                self.db.create_document(message)
 
-        self.topic_list.data = []
+                print("✅ Wrote " + self.topic + " to the cloudant database.")
+                self.topic_list.data = []
+
+        elif self.topic == "event":
+
+            # get cloud time
+            dt = datetime.datetime.now(datetime.timezone.utc)
+            utc_time = dt.replace(tzinfo=datetime.timezone.utc)
+            cloud_t = utc_time.timestamp()
+
+            # repeat for all unique events
+            unique_events = list(set([n["event_id"] for n in data]))
+
+            for event_id in unique_events:
+                event_entries = [n for n in data if n["event_id"]==event_id]
+                max_time = max([n["cloud_t"] for n in event_entries])
+
+                if max_time+self.params["max_pause"]<cloud_t:
+
+                    out_dict = {"event_id": event_id}
+                    id = 1
+
+                    for message in event_entries:
+                        out_dict[id] = message
+                        id += 1
+            
+                    self.db.create_document(out_dict)
+
+                    print("✅ Wrote " + self.topic + " to the cloudant database.")
+                    self.topic_list.data = []
 
     def run(self):
         # run loop indefinitely
