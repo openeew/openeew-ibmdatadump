@@ -2,12 +2,7 @@
 
 import json
 import glob
-from argparse import ArgumentParser
 from paho.mqtt.client import Client as MqttClient
-
-import pandas as pd
-import time
-from datetime import datetime
 
 import os, sys, inspect
 
