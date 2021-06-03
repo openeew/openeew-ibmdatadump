@@ -1,14 +1,7 @@
 """This script receives trace data from MQTT by subscribing to a topic"""
 import json
-from argparse import ArgumentParser
 from paho.mqtt.client import Client as MqttClient
-import datetime
-import time
-import pandas as pd
-from cloudant.client import Cloudant
-from cloudant.error import CloudantException
-from cloudant.result import Result, ResultByKey
-from cloudant.database import CloudantDatabase
+
 import os
 
 
