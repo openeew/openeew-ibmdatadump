@@ -22,36 +22,15 @@ class ReceiveTopic:
         MQTT variable in params (params["MQTT"]) define whether local, or IBM MQTT is used
         """
 
-        if self.params["MQTT"] == "IBM":
-            # create a client
-            client = self.create_client(
-                host=os.environ["MQTT_HOST"],
-                port=int(os.environ["MQTT_PORT"]),
-                username=os.environ["MQTT_USERNAME"],
-                password=os.environ["MQTT_PASSWORD"],
-                clientid=os.environ["MQTT_CLIENTID"] + self.topic,
-            )
-
-        elif self.params["MQTT"] == "local":
-            # create a client
-            client = self.create_client(
-                host="localhost",
-                port=1883,
-                username="NA",
-                password="NA",
-                clientid="NA:" + self.topic,
-            )
-
-        elif self.params["MQTT"] == "custom":
-            # create a client
-            client = self.create_client(
-                host=os.environ["CUS_MQTT_HOST"],
-                port=int(os.environ["CUS_MQTT_PORT"]),
-                username=os.environ["CUS_MQTT_USERNAME"],
-                password=os.environ["CUS_MQTT_PASSWORD"],
-                clientid=os.environ["CUS_MQTT_CLIENTID"] + self.topic,
-                cafile=os.environ["CUS_MQTT_CERT"],
-            )
+        # create a client
+        client = self.create_client(
+            host=os.environ["MQTT_HOST"],
+            port=int(os.environ["MQTT_PORT"]),
+            username=os.environ["MQTT_USERNAME"],
+            password=os.environ["MQTT_PASSWORD"],
+            clientid=os.environ["MQTT_CLIENTID"] + self.topic,
+            cafile=os.environ["MQTT_CERT"],
+        )
 
         client.loop_forever()
 
@@ -62,8 +41,10 @@ class ReceiveTopic:
         if username and password:
             client.username_pw_set(username=username, password=password)
 
-        if cafile:
-            client.tls_set(certfile=cafile)
+        try:
+            client.tls_set(ca_certs=cafile)
+        except:
+            print("Proceeding without certificate file")
 
         client.on_connect = self.on_connect
         client.on_message = self.on_message
