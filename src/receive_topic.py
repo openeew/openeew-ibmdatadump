@@ -48,8 +48,10 @@ class ReceiveTopic:
         if username and password:
             client.username_pw_set(username=username, password=password)
 
-        if cafile:
-            client.tls_set(certfile=cafile)
+        try:
+            client.tls_set(ca_certs=cafile)
+        except:
+            print("Proceeding without certificate file")
 
         client.on_connect = self.on_connect
         client.on_message = self.on_message
