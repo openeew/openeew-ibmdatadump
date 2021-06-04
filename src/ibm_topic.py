@@ -1,12 +1,6 @@
-# import modules
 from cloudant.client import Cloudant
-from cloudant.error import CloudantException
-from cloudant.result import Result, ResultByKey
-from cloudant.database import CloudantDatabase
 
 import time
-import pandas as pd
-import json
 import os
 import datetime
 
