@@ -28,12 +28,12 @@ class ReceiveTopic:
 
         # create a client
         client = self.create_client(
-            host=os.environ["MQTT_HOST"],
-            port=int(os.environ["MQTT_PORT"]),
-            username=os.environ["MQTT_USERNAME"],
-            password=os.environ["MQTT_PASSWORD"],
-            clientid=os.environ["MQTT_CLIENTID"] + self.topic,
-            cafile=os.environ["MQTT_CERT"],
+            host=os.getenv("MQTT_HOST", "localhost"),
+            port=int(os.getenv("MQTT_PORT", "1883")),
+            clientid=os.getenv("MQTT_CLIENTID", "") + self.topic,
+            username=os.getenv("MQTT_USERNAME"),
+            password=os.getenv("MQTT_PASSWORD"),
+            cafile=os.getenv("MQTT_CERT"),
         )
 
         client.loop_forever()
