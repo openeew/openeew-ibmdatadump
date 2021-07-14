@@ -18,11 +18,15 @@ class Topic2IBM:
         self.topic = topic
         self.topic_list = topic_list
 
-        client = Cloudant(
-            os.environ["CLOUDANT_USERNAME"],
-            os.environ["CLOUDANT_PASSWORD"],
-            url=os.environ["CLOUDANT_URL"],
-        )
+        try:
+            client = Cloudant(
+                os.environ["CLOUDANT_USERNAME"],
+                os.environ["CLOUDANT_PASSWORD"],
+                url=os.environ["CLOUDANT_URL"],
+            )
+        except KeyError as exception:
+            self.logger.error(exception)
+
         client.connect()
 
         if self.topic == "event":
