@@ -5,6 +5,7 @@ from paho.mqtt.client import Client as MqttClient
 import os
 import logging
 
+
 class ReceiveTopic:
     """This class subscribes to the MQTT and receivces raw data"""
 
@@ -66,7 +67,9 @@ class ReceiveTopic:
         The production topic is 'iot-2/type/OpenEEW/id/+/evt/+/fmt/json'"""
 
         topic = "iot-2/type/OpenEEW/id/+/evt/" + self.topic + "/fmt/json"
-        self.logging.info(f"✅ Subscribed to detection topic with result code {resultcode}")
+        self.logging.info(
+            f"✅ Subscribed to detection topic with result code {resultcode}"
+        )
         self.logging.info("  Topic {}".format(topic))
 
         client.subscribe(topic)
