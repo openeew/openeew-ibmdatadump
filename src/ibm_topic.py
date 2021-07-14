@@ -3,10 +3,13 @@ from cloudant.client import Cloudant
 import time
 import os
 import datetime
-
+import logging
 
 class Topic2IBM:
     """This class gets the devices from Cloudant"""
+    log_format = "%(asctime)s - module:%(module)s - line:%(lineno)s - %(levelname)s - %(message)s"
+    logging.basicConfig(format=log_format)
+    logger = logging.getLogger(__name__)
 
     def __init__(self, topic_list, params, topic) -> None:
         """Initializes the DataReceiver object"""
@@ -37,7 +40,7 @@ class Topic2IBM:
             for message in data:
                 self.db.create_document(message)
 
-                print("✅ Wrote " + self.topic + " to the cloudant database.")
+                self.logging.info("✅ Wrote " + self.topic + " to the cloudant database.")
                 self.topic_list.data = []
 
         elif self.topic == "event":
@@ -65,7 +68,7 @@ class Topic2IBM:
 
                     self.db.create_document(out_dict)
 
-                    print("✅ Wrote " + self.topic + " to the cloudant database.")
+                    self.logging.info("✅ Wrote " + self.topic + " to the cloudant database.")
                     self.topic_list.data = []
 
     def run(self):
