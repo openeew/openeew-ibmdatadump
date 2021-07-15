@@ -3,10 +3,15 @@ import json
 from paho.mqtt.client import Client as MqttClient
 
 import os
+import logging
 
 
 class ReceiveTopic:
     """This class subscribes to the MQTT and receivces raw data"""
+
+    log_format = "%(asctime)s - module:%(module)s - line:%(lineno)s - %(levelname)s - %(message)s"
+    logging.basicConfig(format=log_format)
+    logger = logging.getLogger(__name__)
 
     def __init__(self, topic_list, topic, params) -> None:
         """Initializes the DataReceiver object"""
@@ -24,12 +29,12 @@ class ReceiveTopic:
 
         # create a client
         client = self.create_client(
-            host=os.environ["MQTT_HOST"],
-            port=int(os.environ["MQTT_PORT"]),
-            username=os.environ["MQTT_USERNAME"],
-            password=os.environ["MQTT_PASSWORD"],
-            clientid=os.environ["MQTT_CLIENTID"] + self.topic,
-            cafile=os.environ["MQTT_CERT"],
+            host=os.getenv("MQTT_HOST", "localhost"),
+            port=int(os.getenv("MQTT_PORT", "1883")),
+            clientid=os.getenv("MQTT_CLIENTID", "") + self.topic,
+            username=os.getenv("MQTT_USERNAME"),
+            password=os.getenv("MQTT_PASSWORD"),
+            cafile=os.getenv("MQTT_CERT"),
         )
 
         client.loop_forever()
@@ -40,15 +45,21 @@ class ReceiveTopic:
 
         if username and password:
             client.username_pw_set(username=username, password=password)
+        else:
+            self.logger.warn("Proceeding without username and password")
+
+        if cafile:
+            client.tls_set(ca_certs=cafile)
+        else:
+            self.logger.warn("Proceeding without certificate file")
 
         try:
-            client.tls_set(ca_certs=cafile)
-        except:
-            print("Proceeding without certificate file")
+            client.on_connect = self.on_connect
+            client.on_message = self.on_message
+            client.connect(host=host, port=port)
+        except OSError as error:
+            self.logger.error(error)
 
-        client.on_connect = self.on_connect
-        client.on_message = self.on_message
-        client.connect(host=host, port=port)
         return client
 
     def on_connect(self, client, userdata, flags, resultcode):
@@ -56,8 +67,11 @@ class ReceiveTopic:
         The production topic is 'iot-2/type/OpenEEW/id/+/evt/+/fmt/json'"""
 
         topic = "iot-2/type/OpenEEW/id/+/evt/" + self.topic + "/fmt/json"
-        print(f"✅ Subscribed to detection topic with result code {resultcode}")
-        print("  Topic {}".format(topic))
+        self.logging.info(
+            f"✅ Subscribed to detection topic with result code {resultcode}"
+        )
+        self.logging.info("  Topic {}".format(topic))
+
         client.subscribe(topic)
 
     def on_message(self, client, userdata, message):
@@ -69,5 +83,5 @@ class ReceiveTopic:
 
             self.topic_list.data.append(data)
 
-        except BaseException as exception:
-            print(exception)
+        except (ValueError, BaseException) as exception:
+            self.logging.error(exception)
